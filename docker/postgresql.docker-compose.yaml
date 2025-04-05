@@ -14,7 +14,7 @@ services:
       # Only if you need to initialize something in the database with a script
       # - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
     networks:
-      - postgres-network
+      - postgres_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -37,7 +37,7 @@ services:
       database:
         condition: service_healthy 
     networks:
-      - postgres-network
+      - postgres_network
 
 volumes:
   postgres_data:
