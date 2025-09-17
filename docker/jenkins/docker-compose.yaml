@@ -1,0 +1,33 @@
+name: jenkins-docker
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins-sandbox
+    privileged: true
+    user: root
+    ports:
+      - "${JENKINS_PORT}:8080"
+      - "${JENKINS_AGENT_PORT}:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/libexec/docker:/usr/libexec/docker
+    restart: unless-stopped
+
+  agent:
+    image: jenkins/inbound-agent:latest
+    container_name: jenkins-agent
+    privileged: true
+    user: root
+    environment:
+      - JENKINS_URL=http://jenkins:8080/
+      - JENKINS_AGENT_NAME=alpha-agent
+      - JENKINS_SECRET=${JENKINS_AGENT_SECRET}
+    depends_on:
+      - jenkins
+    restart: unless-stopped
+    
+
+volumes:
+  jenkins_home:
