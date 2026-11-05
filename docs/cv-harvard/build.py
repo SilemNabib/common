@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Build CV variants into PDF and Markdown. Requires Typst and Python 3 only.
+"""Build CVs into PDF and Markdown. Requires Typst and Python 3 only.
+
+Run it from a folder that has data/ and variants/. That folder can be anywhere,
+so your personal data can live outside this repo.
 
 Usage:
     python build.py                            every file in variants/
-    python build.py example-en                 variants/example-en.yaml -> output/example-en.*
+    python build.py base-en                    variants/base-en.yaml -> output/base-en.*
     python build.py applications/2026-11-acme  its variant.yaml -> same folder
 """
 
@@ -11,16 +14,19 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+GENERATOR = Path(__file__).resolve().parent
+PROJECT = Path.cwd()
 ENTRY = "cv.typ"
+VARIANT = "variant.yaml"
 
 
-def typst(*args):
+def typst(workspace, *args):
     result = subprocess.run(
         ["typst", *args],
-        cwd=ROOT,
+        cwd=workspace,
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -34,10 +40,18 @@ def typst(*args):
 
 def locate(target):
     """Return the variant file and the output path (without extension)."""
-    folder = ROOT / target
+    folder = PROJECT / target
     if folder.is_dir():
-        return folder / "variant.yaml", folder / folder.name
-    return ROOT / "variants" / f"{target}.yaml", ROOT / "output" / target
+        return folder / VARIANT, folder / folder.name
+    return PROJECT / "variants" / f"{target}.yaml", PROJECT / "output" / target
+
+
+def prepare_workspace(workspace, variant):
+    """Typst only reads files inside its root, so put generator and data together."""
+    shutil.copy(GENERATOR / ENTRY, workspace)
+    shutil.copytree(GENERATOR / "template", workspace / "template")
+    shutil.copytree(PROJECT / "data", workspace / "data")
+    shutil.copy(variant, workspace / VARIANT)
 
 
 def contact_item(item):
@@ -85,16 +99,21 @@ def build(target):
     if not variant.is_file():
         sys.exit(f"Variant not found: {variant}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    inputs = ("--input", f"variant={variant.relative_to(ROOT).as_posix()}")
 
-    def query(label):
-        return json.loads(typst("eval", f"query(<{label}>).first().value", "--in", ENTRY, *inputs))
+    with tempfile.TemporaryDirectory() as temp:
+        workspace = Path(temp)
+        prepare_workspace(workspace, variant)
+        inputs = ("--input", f"variant={VARIANT}")
 
-    typst("compile", ENTRY, str(output.with_suffix(".pdf")), *inputs)
-    output.with_suffix(".md").write_text(to_markdown(query("cv")), encoding="utf-8", newline="\n")
+        def query(label):
+            expression = f"query(<{label}>).first().value"
+            return json.loads(typst(workspace, "eval", expression, "--in", ENTRY, *inputs))
 
-    pages = query("page-count")
-    print(f"{target}: {output.relative_to(ROOT).as_posix()}.pdf and .md ({pages} page(s))")
+        typst(workspace, "compile", ENTRY, str(output.with_suffix(".pdf")), *inputs)
+        output.with_suffix(".md").write_text(to_markdown(query("cv")), encoding="utf-8", newline="\n")
+        pages = query("page-count")
+
+    print(f"{target}: {output.relative_to(PROJECT).as_posix()}.pdf and .md ({pages} page(s))")
     if pages > 1:
         print(f"warning: {target} does not fit on one page", file=sys.stderr)
 
@@ -102,7 +121,9 @@ def build(target):
 def main():
     if not shutil.which("typst"):
         sys.exit("Typst not found. Install it from https://github.com/typst/typst#installation")
-    targets = sys.argv[1:] or sorted(path.stem for path in (ROOT / "variants").glob("*.yaml"))
+    if not (PROJECT / "data").is_dir():
+        sys.exit(f"No data/ folder in {PROJECT}. Run this from the folder that has data/ and variants/.")
+    targets = sys.argv[1:] or sorted(path.stem for path in (PROJECT / "variants").glob("*.yaml"))
     for target in targets:
         build(target)
 

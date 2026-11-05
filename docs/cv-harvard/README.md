@@ -1,55 +1,131 @@
-# CV Harvard template
+# CV generator (Harvard format)
 
-A one-column, Harvard-style CV that you build from plain text. You keep all your content in one place and create a short file for each version you need, so one edit reaches every version.
+Turns plain-text files into a one-column, Harvard-style CV, as a PDF and as Markdown.
+
+Keeping a separate Word file for each job and language gets tiring: every change has to be repeated in every copy. Here, all your content lives in one place, and each version of your CV is a short file that picks what to include. Edit a bullet once and every version that uses it updates, in any language.
 
 The data in this folder is fictional. See `output/` for the result.
 
+## How it works
+
+The generator and your content are kept apart, so the generator can be public while your personal data stays private:
+
+```text
+Generator (this folder)         Your content (any private folder)
+├── build.py                    ├── data/            everything you could include
+├── cv.typ                      ├── variants/        one short file per CV version
+└── template/                   ├── applications/    optional, one folder per job
+                                └── output/          generated PDF and Markdown
+```
+
+You run `build.py` from your content folder, and the results are saved there.
+
 ## Requirements
 
-- [Typst](https://github.com/typst/typst#installation), to build the PDF
-- Python 3, to run `build.py` (no extra packages)
+- [Typst](https://github.com/typst/typst#installation), to build the PDF. On Windows: `winget install --id Typst.Typst`
+- Python 3, with no extra packages
 - The Arial font. To use another font, change it in `template/harvard.typ`
 
-## Build
+## Try it
+
+From this folder:
 
 ```bash
 python build.py
 ```
 
-This creates a PDF and a Markdown file in `output/` for each file in `variants/`. To build only one version:
+This builds the fictional examples into `output/`.
 
-```bash
-python build.py example-en
-```
+## Use your own content
+
+1. Create a folder outside any public repo, and copy `data/` and `variants/` into it.
+2. Replace the example content with your own, as described below.
+3. From that folder, run the generator:
+
+   ```bash
+   python path/to/cv-harvard/build.py
+   ```
+
+| Command | What it builds | Where it saves |
+|---|---|---|
+| `build.py` | Every file in `variants/` | `output/` |
+| `build.py base-en` | `variants/base-en.yaml` | `output/` |
+| `build.py applications/2026-11-acme` | `variant.yaml` in that folder | That same folder |
 
 The script warns you if a CV doesn't fit on one page.
 
-## Make it yours
+## Write your content
 
-1. Copy this folder somewhere private. Your CV contains personal data, so don't commit it to a public repo.
-2. Replace the files in `data/` with your own content:
+These six files must exist in `data/`. Use `[]` for a file with nothing in it yet.
 
-   | File | Content |
-   |---|---|
-   | `profile.yaml` | Name, contact details, links, and summaries |
-   | `experience.yaml` | Jobs and their bullets |
-   | `education.yaml` | Degrees |
-   | `projects.yaml` | Projects |
-   | `certifications.yaml` | Certifications |
-   | `skills.yaml` | Skill groups |
+| File | Content |
+|---|---|
+| `profile.yaml` | Name, contact details, links, and one summary per focus |
+| `experience.yaml` | Jobs and their bullets |
+| `education.yaml` | Degrees |
+| `projects.yaml` | Projects |
+| `certifications.yaml` | Certifications |
+| `skills.yaml` | Skill groups |
 
-3. Create a file in `variants/` for each version you need. It sets the language, the summary, the sections, and which entries to include, all in the order you list them. The example files show each option.
+Each entry has an `id`, which variants use to pick it. Bullets have one too, and their `tags` are notes to help you choose; they are never printed.
 
-Text can be written as `{ en: ..., es: ... }`. You only need the languages you use, and the build stops with a clear error if a translation is missing.
-
-To add a language, add its labels to `template/resolve.typ`.
-
-## Tailored versions
-
-To keep a CV for a specific application, create a folder with a `variant.yaml` inside and build it:
-
-```bash
-python build.py applications/2026-11-acme
+```yaml
+- id: acme-developer
+  title: Acme Software (Springfield)
+  subtitle: { en: Junior Backend Developer, es: Desarrollador Backend Junior }
+  start: "2025-03"
+  end: null # null means the job is current
+  bullets:
+    - id: rest-api
+      tags: [backend, api]
+      text:
+        en: Built REST API endpoints used by the internal billing tool.
+        es: Desarrollé endpoints de API REST usados por la herramienta interna de facturación.
 ```
 
-The PDF and Markdown files are saved in that same folder.
+Entries also accept `url`, and a single `date` in place of `start` and `end`. Text can be plain, or written as `{ en: ..., es: ... }` if it changes by language. You only need the languages you use.
+
+## Choose what goes in each version
+
+A variant sets the language, the summary, the sections, and the entries, all in the order you list them:
+
+```yaml
+lang: en
+profile: backend
+sections: [profile, experience, projects, education, skills, links]
+
+experience:
+  - acme-developer # no bullet list means every bullet
+  - id: university-support
+    bullets: [help-desk] # or pick the bullets you want
+
+projects: [task-api]
+education: [university, high-school]
+
+skills:
+  - id: technical
+    items: [TypeScript, NestJS, PostgreSQL] # or pick the skills you want
+  - soft
+```
+
+Every section in `sections` except `profile` and `links` needs its own list.
+
+## Tailor a CV for a job
+
+Create a folder such as `applications/2026-11-acme/` in your content folder, add a `variant.yaml` with the same format, and build it with the command above. The PDF and Markdown are saved next to the variant, so you can see what you sent to each company.
+
+## Customize
+
+- **Layout, fonts, and spacing:** edit `template/harvard.typ`.
+- **Section titles, or a new language:** edit the labels in `template/resolve.typ`.
+
+## Troubleshooting
+
+| Message | What to do |
+|---|---|
+| `No data/ folder in ...` | Run the command from your content folder |
+| `Variant not found` | Check the name, and leave out `.yaml` and `variants/` |
+| `Missing 'es' translation` | Add that language to the text shown in the message |
+| `Unknown experience id` | Make sure the variant uses an `id` that exists in `data/` |
+| `does not fit on one page` | Remove bullets or entries from the variant |
+| `unknown font family` | Install Arial, or change the font in `template/harvard.typ` |

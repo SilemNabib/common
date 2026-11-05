@@ -71,7 +71,8 @@
 }
 
 #let harvard(cv, body) = {
-  set document(title: cv.name + " - CV", author: cv.name)
+  // No date, so rebuilding unchanged content produces an identical PDF.
+  set document(title: cv.name + " - CV", author: cv.name, date: none)
   set page(paper: "us-letter", margin: (x: 0.5in, y: 0.5in))
   set text(font: "Arial", size: 10pt, lang: cv.lang, hyphenate: false)
   set par(justify: true, leading: 0.43em, spacing: 0.5em)
