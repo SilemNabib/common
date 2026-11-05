@@ -1,0 +1,11 @@
+- id: university
+  title: Example University
+  subtitle:
+    en: Bachelor of Science in Software Engineering (In Progress)
+    es: Ingeniería de Software (En curso)
+  date: 2027
+
+- id: high-school
+  title: Springfield High School
+  subtitle: { en: High School Diploma, es: Bachiller Académico }
+  date: 2021

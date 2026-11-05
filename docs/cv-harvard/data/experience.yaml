@@ -1,0 +1,35 @@
+# Every job and every bullet you might use. Variants choose from this list.
+# Tags are notes for choosing bullets; they are never printed.
+- id: acme-developer
+  title: Acme Software (Springfield)
+  subtitle: { en: Junior Backend Developer, es: Desarrollador Backend Junior }
+  start: "2025-03"
+  end: null # null means the job is current
+  bullets:
+    - id: rest-api
+      tags: [backend, api]
+      text:
+        en: Built REST API endpoints used by the internal billing tool.
+        es: Desarrollé endpoints de API REST usados por la herramienta interna de facturación.
+    - id: query-tuning
+      tags: [backend, databases]
+      text:
+        en: Reduced the response time of slow reports by rewriting their SQL queries.
+        es: Reduje el tiempo de respuesta de reportes lentos reescribiendo sus consultas SQL.
+
+- id: university-support
+  title: Example University (Springfield)
+  subtitle: { en: IT Support Assistant, es: Auxiliar de Soporte TI }
+  start: "2023-08"
+  end: "2025-02"
+  bullets:
+    - id: classroom-equipment
+      tags: [support]
+      text:
+        en: Set up and maintained classroom equipment for lectures and events.
+        es: Instalé y mantuve los equipos de las aulas para clases y eventos.
+    - id: help-desk
+      tags: [support, communication]
+      text:
+        en: Answered help desk requests from professors and staff by phone and chat.
+        es: Atendí solicitudes de mesa de ayuda de profesores y personal por teléfono y chat.

@@ -1,0 +1,18 @@
+# A variant says which language, which content, and in what order.
+lang: en
+profile: backend
+sections: [profile, experience, projects, education, certifications, skills, links]
+
+experience:
+  - acme-developer # no bullet list means every bullet
+  - id: university-support
+    bullets: [help-desk] # or pick the bullets you want
+
+projects: [task-api]
+education: [university, high-school]
+certifications: [cloud-basics]
+
+skills:
+  - id: technical
+    items: [TypeScript, NestJS, PostgreSQL, Docker, Git/GitHub] # or pick the skills you want
+  - soft

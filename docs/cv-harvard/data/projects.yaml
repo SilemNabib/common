@@ -1,0 +1,16 @@
+- id: task-api
+  title: Task Tracker API
+  subtitle: Node.js, NestJS, PostgreSQL
+  url: "https://github.com/example/task-api"
+  date: 2025
+  bullets:
+    - id: auth
+      tags: [backend, security]
+      text:
+        en: Implemented authentication and role-based access control.
+        es: Implementé autenticación y control de acceso por roles.
+    - id: tests
+      tags: [backend, testing]
+      text:
+        en: Added end-to-end tests that run on every push.
+        es: Agregué pruebas end-to-end que se ejecutan en cada push.

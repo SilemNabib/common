@@ -1,0 +1,22 @@
+# Items that need translating use { id, label }. A variant selects items by id or text.
+- id: technical
+  label: { en: Technical Skills, es: Habilidades técnicas }
+  items:
+    - Java
+    - TypeScript
+    - Python
+    - NestJS
+    - Spring Boot
+    - PostgreSQL
+    - Docker
+    - Git/GitHub
+    - id: office
+      label: { en: Excel and Word (intermediate), es: Excel y Word (intermedio) }
+
+- id: soft
+  label: { en: Soft Skills, es: Habilidades blandas }
+  items:
+    - id: teamwork
+      label: { en: Teamwork, es: Trabajo en equipo }
+    - id: adaptability
+      label: { en: Adaptability, es: Adaptabilidad }

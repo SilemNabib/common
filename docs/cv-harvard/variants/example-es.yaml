@@ -1,0 +1,8 @@
+# Same data, in Spanish, with a different focus and order.
+lang: es
+profile: support
+sections: [profile, experience, education, skills, links]
+
+experience: [university-support, acme-developer]
+education: [university, high-school]
+skills: [soft, technical]

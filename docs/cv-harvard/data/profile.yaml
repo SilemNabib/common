@@ -1,0 +1,30 @@
+# Fictional example data. Replace it with your own.
+name: Alex Rivera
+location: { en: "Springfield, Exampleland", es: "Springfield, Ejemplandia" }
+phone: "+00 000 000 0000"
+email: alex.rivera@example.com
+
+# Shown under your name.
+contact_links:
+  - { label: LinkedIn, url: "https://www.linkedin.com/in/example" }
+
+# Shown in the Highlights / Links / Portfolio section.
+links:
+  - { label: GitHub, url: "https://github.com/example" }
+
+# Keep one summary per focus. A variant picks one by its key.
+summaries:
+  backend:
+    en: >-
+      Software engineering student focused on backend development, with hands-on
+      experience building REST APIs and working with relational databases.
+    es: >-
+      Estudiante de ingeniería de software enfocado en desarrollo backend, con
+      experiencia práctica creando API REST y trabajando con bases de datos relacionales.
+  support:
+    en: >-
+      Software engineering student with experience in technical support and user
+      assistance, comfortable solving problems under pressure.
+    es: >-
+      Estudiante de ingeniería de software con experiencia en soporte técnico y
+      atención a usuarios, acostumbrado a resolver problemas bajo presión.
